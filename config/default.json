@@ -1,0 +1,14 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 4000
+  },
+  "logs": {
+    "level": "debug"
+  },
+  "rpc": "https://testnet-rpc.monad.xyz/",
+  "db": {
+    "uri": "mongodb://127.0.0.1:27017/test"
+  },
+  "derivationPath": "m/44'/397'/0'"
+}
