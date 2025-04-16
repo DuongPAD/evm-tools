@@ -1,2 +1,4 @@
 wallets.json
+wallet-monad.json
+*.csv
 node_modules

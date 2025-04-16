@@ -478,7 +478,7 @@ async function processMultipleWallets(walletsFilePath, nftList, providerUrl, api
 // Hàm main để chạy script
 async function main() {
   // Cấu hình
-  const walletsFilePath = './wallets.json'; // Đường dẫn đến file JSON chứa danh sách ví
+  const walletsFilePath = './wallet-monad.json'; // Đường dẫn đến file JSON chứa danh sách ví
   const providerUrl = 'https://testnet-rpc.monad.xyz'; // URL RPC của Monad testnet
   const apiUrl = 'https://api-mainnet.magiceden.io/v3/rtp/monad-testnet/execute/buy/v7'; // URL API của MagicEden
   
