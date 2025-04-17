@@ -1,42 +1,68 @@
 const fs = require('fs');
 const csv = require('csv-parser');
 const { ethers } = require('ethers');
-
 const inputFile = 'WL_GPM t.csv';
 const outputFile = 'wallet-monad.json';
 
+// Đọc toàn bộ file và kiểm tra dấu phân cách
+let fileContent = fs.readFileSync(inputFile, 'utf8');
+
+// Nếu chứa dấu ; → replace thành ,
+if (fileContent.includes(';')) {
+  console.log('🔧 Detected ";" separator – converting to ","...');
+  fileContent = fileContent.replace(/;/g, ',');
+  fs.writeFileSync('__temp.csv', fileContent); // File tạm để parse tiếp
+}
+
 const results = [];
+const finalInputFile = fileContent.includes(',') ? '__temp.csv' : inputFile;
 
-fs.createReadStream(inputFile)
-  .pipe(csv())
-  .on('headers', (headers) => {
-    // Convert headers to lowercase
-    for (let i = 0; i < headers.length; i++) {
-      headers[i] = headers[i].toLowerCase();
-    }
-  })
-  .on('data', (data) => {
-    // Convert keys to lowercase
-    const lowerCasedData = {};
-    for (let key in data) {
-      lowerCasedData[key.toLowerCase()] = data[key];
+fs.createReadStream(finalInputFile)
+  .pipe(csv()) // Dấu , mặc định
+  .on('data', (row) => {
+    // Lowercase toàn bộ key
+    const lowerRow = {};
+    for (const key in row) {
+      lowerRow[key.toLowerCase()] = row[key]?.trim();
     }
 
-    // Nếu có mnemonic, generate wallet address
-    if (lowerCasedData.mnemonic) {
-      try {
-        const wallet = ethers.Wallet.fromMnemonic(lowerCasedData.mnemonic);
-        lowerCasedData.address = wallet.address;
-        lowerCasedData.privateKey = wallet.privateKey;
-      } catch (err) {
-        console.error(`⚠️ Invalid mnemonic at row:`, lowerCasedData);
-        lowerCasedData.address = null;
+    const profile = lowerRow['profile name'];
+    const rawInput = lowerRow['mnemonic'];
+
+    if (!rawInput) return;
+
+    try {
+      let wallet;
+      if (rawInput.includes(' ')) {
+        wallet = ethers.Wallet.fromMnemonic(rawInput);
+      } else {
+        const privKey = rawInput.startsWith('0x') ? rawInput : `0x${rawInput}`;
+        wallet = new ethers.Wallet(privKey);
       }
-    }
 
-    results.push(lowerCasedData);
+      results.push({
+        profile,
+        source: rawInput,
+        address: wallet.address,
+        privateKey: wallet.privateKey,
+      });
+    } catch (err) {
+      console.error(`⚠️ Invalid input in profile "${profile}"`);
+      results.push({
+        profile,
+        source: rawInput,
+        address: null,
+        privateKey: null,
+        error: 'Invalid mnemonic or private key',
+      });
+    }
   })
   .on('end', () => {
     fs.writeFileSync(outputFile, JSON.stringify(results, null, 2));
-    console.log(`✅ Converted CSV to JSON with wallet addresses -> ${outputFile}`);
+    console.log(`✅ Done! Output saved to "${outputFile}"`);
+
+    // Xoá file tạm nếu có
+    if (fs.existsSync('__temp.csv')) {
+      fs.unlinkSync('__temp.csv');
+    }
   });
