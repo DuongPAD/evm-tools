@@ -140,6 +140,10 @@ async function executeMagicEdenBuy(privateKey, transactionData, provider) {
     // Kiểm tra số dư
     const balance = await wallet.getBalance();
     const valueInWei = ethers.BigNumber.from(value);
+    const valueInMON = parseFloat(ethers.utils.formatEther(valueInWei));
+    if (valueInMON > 70) {
+      throw new Error(`Price ${valueInMON} MON exceeds maximum limit of 70 MON`);
+    }
     
     if (balance.lt(valueInWei)) {
       throw new Error(`Insufficient balance. Need ${ethers.utils.formatEther(valueInWei)} but only have ${ethers.utils.formatEther(balance)}`);
