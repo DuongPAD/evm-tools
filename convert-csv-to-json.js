@@ -1,8 +1,11 @@
 const fs = require('fs');
 const csv = require('csv-parser');
 const { ethers } = require('ethers');
-const inputFile = 'WL_GPM t.csv';
+
+const inputFile = 'WL_GPM.csv';
 const outputFile = 'wallet-monad.json';
+
+let finalInputFile = inputFile; // Mặc định dùng file gốc
 
 // Đọc toàn bộ file và kiểm tra dấu phân cách
 let fileContent = fs.readFileSync(inputFile, 'utf8');
@@ -11,16 +14,15 @@ let fileContent = fs.readFileSync(inputFile, 'utf8');
 if (fileContent.includes(';')) {
   console.log('🔧 Detected ";" separator – converting to ","...');
   fileContent = fileContent.replace(/;/g, ',');
-  fs.writeFileSync('__temp.csv', fileContent); // File tạm để parse tiếp
+  fs.writeFileSync('__temp.csv', fileContent);
+  finalInputFile = '__temp.csv'; // Chỉ set nếu có tạo file tạm
 }
 
 const results = [];
-const finalInputFile = fileContent.includes(',') ? '__temp.csv' : inputFile;
 
 fs.createReadStream(finalInputFile)
-  .pipe(csv()) // Dấu , mặc định
+  .pipe(csv())
   .on('data', (row) => {
-    // Lowercase toàn bộ key
     const lowerRow = {};
     for (const key in row) {
       lowerRow[key.toLowerCase()] = row[key]?.trim();
@@ -28,7 +30,6 @@ fs.createReadStream(finalInputFile)
 
     const profile = lowerRow['profile name'];
     const rawInput = lowerRow['mnemonic'];
-
     if (!rawInput) return;
 
     try {
@@ -58,11 +59,15 @@ fs.createReadStream(finalInputFile)
     }
   })
   .on('end', () => {
-    fs.writeFileSync(outputFile, JSON.stringify(results, null, 2));
+    const resultsWithIndex = results.map((item, idx) => ({
+      index: String(idx + 1).padStart(3, '0'),
+      ...item,
+    }));
+
+    fs.writeFileSync(outputFile, JSON.stringify(resultsWithIndex, null, 2));
     console.log(`✅ Done! Output saved to "${outputFile}"`);
 
-    // Xoá file tạm nếu có
-    if (fs.existsSync('__temp.csv')) {
+    if (finalInputFile === '__temp.csv' && fs.existsSync('__temp.csv')) {
       fs.unlinkSync('__temp.csv');
     }
   });
