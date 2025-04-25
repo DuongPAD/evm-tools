@@ -514,8 +514,8 @@ async function main() {
       name: 'Monadverse: Chapter 4'
     },
     {
-      contractAddress: '0xc87f3bbdc635ad0ffe36947ec17366f7447a0142',
-      tokenId: '0',
+      contractAddress: '0x5d2a7412872f9dc5371d0cb54274fdb241171b95',
+      tokenId: '6',
       name: 'Monadverse Chapter 5'
     },
     {
@@ -527,6 +527,11 @@ async function main() {
       contractAddress: '0xc29b98dca561295bd18ac269d3d9ffdfcc8ad426',
       tokenId: '9',
       name: 'Monadverse: Chapter 7'
+    },
+    {
+      contractAddress: '0xce3be27bdf0922e92bbf3c2eefbb26487946ed4c',
+      tokenId: '12',
+      name: 'Monadverse: Chapter 8'
     }
   ];
   
