@@ -318,7 +318,7 @@ async function main() {
   const providerUrl = 'https://testnet-rpc.monad.xyz'; // URL RPC của Monad testnet
   
   // Thông tin mint
-  const contractAddress = "0xd29959795a350C63e0315139A71ff6ec7ee9f0fd"; // Địa chỉ contract
+  const contractAddress = "0xDF658971bA939e142853f21DA600561754399B8A"; // Địa chỉ contract
   const quantity = 1; // Số lượng token muốn mint (param #1)
   const referralAddress = "0xB0C3B4C608a786a5c1B65dab42945Ca4bbDCD7F4"; // Địa chỉ ví giới thiệu (param #2)
   const valuePerMint = "3.49"; // Số MON gửi kèm mỗi giao dịch mint (nếu cần)
