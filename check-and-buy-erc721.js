@@ -163,7 +163,7 @@ async function getFloorListing(contractAddress, maxRetries = 3, retryDelay = 500
 /**
  * Gọi API MagicEden để lấy dữ liệu giao dịch với xử lý thử lại
  */
-async function fetchMagicEdenBuyData(buyParams, apiUrl, maxRetries = 3, retryDelay = 5000) {
+async function fetchMagicEdenBuyData(buyParams, apiUrl, maxRetries = 3, retryDelay = 15000) {
   let lastError = null;
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -503,7 +503,7 @@ async function processMultipleWallets(walletsFilePath, nftList, providerUrl, api
     const allResults = [];
     
     // Xử lý từng ví
-    for (let i = 0; i < wallets.length; i++) {
+    for (let i = 87; i < wallets.length; i++) {
       const wallet = wallets[i];
       
       // Kiểm tra dữ liệu ví
@@ -554,29 +554,9 @@ async function main() {
   // Danh sách NFT cần kiểm tra - chỉ cần contract address, không cần tokenId
   const nftList = [
     {
-      contractAddress: '0xc1711ff6b4f81ae45c36f370a3914da53b98bcdc',
-      name: 'MonAI Silent Aura'
-    },
-    {
-      contractAddress: '0xcf9666810c3d9f8ffe912a40738a91e19040b84d',
-      name: 'MonAI Chosen One'
-    },
-    {
-      contractAddress: '0x252390af40ab02c0b8d05fe6f8bae145c6f26989',
-      name: 'MonAI Qingyi'
-    },
-    {
-      contractAddress: '0xde902fbf47253fc2680b7c206ec5a998e584cc75',
-      name: 'MonAI Mystery'
-    },
-    {
-      contractAddress: '0xd7e0b098a1ded27f76aa619a076a0c64a1066932',
-      name: 'MonAI Genesis Seed'
-    },
-    {
-      contractAddress: '0x97d6b5e3701c9c14c909bbd21d88c81a933c5320',
-      name: 'MonAI Eclipsis'
-    },
+      contractAddress: '0x40398c82cda3b7776f7af3bdd80711b503f6088a',
+      name: 'Letters of MonAI'
+    }
   ];
   
   try {
